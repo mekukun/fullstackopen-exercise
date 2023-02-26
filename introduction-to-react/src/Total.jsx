@@ -1,7 +1,7 @@
 const Total = (props) => {
   let exerciseCount = 0;
   props.materials.forEach((content) => {
-    exerciseCount += content.exercise;
+    exerciseCount += content.exercises;
   });
   return (
     <div>

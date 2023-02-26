@@ -1,8 +1,8 @@
 const Part = ({ content }) => {
   return (
     <p>
-      Part Name: {content.part} with {content.exercise}{" "}
-      {content.exercise == 1 ? "exercise." : "exercises."}
+      Part Name: {content.name} with {content.exercises}{" "}
+      {content.exercises == 1 ? "exercise." : "exercises."}
     </p>
   );
 };
