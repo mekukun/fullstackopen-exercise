@@ -15,3 +15,7 @@
 ##Exercises 2.6-2.10
 
 - HTML forms in React
+
+##Exercises 2.11
+
+- useEffect hook + axios for data fetching.
