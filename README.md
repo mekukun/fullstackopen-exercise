@@ -11,3 +11,7 @@
 ##Exercises 2.1.-2.5.
 
 - Use of Array.map in React.
+
+##Exercises 2.6-2.10
+
+- HTML forms in React
