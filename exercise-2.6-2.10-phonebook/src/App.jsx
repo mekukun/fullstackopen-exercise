@@ -15,7 +15,7 @@ const App = () => {
 
     if (!persons.some((person) => person.name === newName)) {
       const newPerson = { name: newName, number: newNumber };
-      noteService.create(newPerson).then((response) => {
+      noteService.createThis(newPerson).then((response) => {
         setPersons(persons.concat(response));
       });
     } else {
@@ -34,7 +34,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <h3>Contact List</h3>
-      <Persons persons={persons} />
+      <Persons persons={persons} setPersons={setPersons} />
       <h3>Add New Contact</h3>
       <PersonForm
         submitBehaviour={submitBehaviour}
