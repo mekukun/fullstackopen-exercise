@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import Filter from "./Filter";
 import PersonForm from "./PersonForm";
 import Persons from "./Persons";
+import noteService from "./services/notes";
 
 const App = () => {
   const [newName, setNewName] = useState("");
@@ -14,8 +14,10 @@ const App = () => {
     e.preventDefault(); //prevent reloading (default behavior)
 
     if (!persons.some((person) => person.name === newName)) {
-      const personsCopy = [...persons];
-      setPersons(personsCopy.concat({ name: newName, number: newNumber }));
+      const newPerson = { name: newName, number: newNumber };
+      noteService.create(newPerson).then((response) => {
+        setPersons(persons.concat(response));
+      });
     } else {
       alert(`${newName} is already added to phonebook`);
     }
@@ -25,9 +27,7 @@ const App = () => {
   };
 
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((response) => {
-      setPersons(response.data);
-    });
+    noteService.getAll().then((response) => setPersons(response));
   }, []);
 
   return (
