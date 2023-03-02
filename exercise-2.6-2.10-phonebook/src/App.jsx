@@ -5,26 +5,8 @@ import Persons from "./Persons";
 import noteService from "./services/notes";
 
 const App = () => {
-  const [newName, setNewName] = useState("");
-  const [newNumber, setNewNumber] = useState("");
   const [newFilter, setNewFilter] = useState("");
   const [persons, setPersons] = useState([]);
-
-  const submitBehaviour = (e) => {
-    e.preventDefault(); //prevent reloading (default behavior)
-
-    if (!persons.some((person) => person.name === newName)) {
-      const newPerson = { name: newName, number: newNumber };
-      noteService.createThis(newPerson).then((response) => {
-        setPersons(persons.concat(response));
-      });
-    } else {
-      alert(`${newName} is already added to phonebook`);
-    }
-
-    setNewName("");
-    setNewNumber("");
-  };
 
   useEffect(() => {
     noteService.getAll().then((response) => setPersons(response));
@@ -36,13 +18,7 @@ const App = () => {
       <h3>Contact List</h3>
       <Persons persons={persons} setPersons={setPersons} />
       <h3>Add New Contact</h3>
-      <PersonForm
-        submitBehaviour={submitBehaviour}
-        newName={newName}
-        setNewName={setNewName}
-        newNumber={newNumber}
-        setNewNumber={setNewNumber}
-      />
+      <PersonForm persons={persons} setPersons={setPersons} />
       <h3>Filter</h3>
       <Filter
         newFilter={newFilter}

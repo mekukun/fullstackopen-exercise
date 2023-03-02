@@ -2,7 +2,7 @@
   "persons": [
     {
       "name": "Arto Hellas",
-      "number": "040-123456",
+      "number": "1234",
       "id": 1
     },
     {
@@ -27,7 +27,7 @@
     },
     {
       "name": "James Bond",
-      "number": "011",
+      "number": "8888",
       "id": 6
     }
   ]
