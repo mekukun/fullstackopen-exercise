@@ -1,9 +1,11 @@
 import { useState } from "react";
 import noteService from "./services/notes";
+import Notification from "./Notification";
 
 const PersonForm = ({ persons, setPersons }) => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
+  const [noti, setNoti] = useState(null);
 
   const submitBehaviour = (e) => {
     e.preventDefault(); //prevent reloading (default behavior)
@@ -14,6 +16,10 @@ const PersonForm = ({ persons, setPersons }) => {
       const newPerson = { name: newName, number: newNumber };
       noteService.createThis(newPerson).then((response) => {
         setPersons(persons.concat(response));
+        setNoti({ text: `Added ${newName}`, style: true });
+        setTimeout(() => {
+          setNoti(null);
+        }, 3000);
       });
     } else if (searchedPerson.number !== newNumber) {
       const confirmChange = confirm(
@@ -30,6 +36,15 @@ const PersonForm = ({ persons, setPersons }) => {
                 person.id !== searchedPerson.id ? person : response
               )
             );
+          })
+          .catch((err) => {
+            setNoti({
+              text: `Information of ${searchedPerson.name} has already been removed from server`,
+              style: false,
+            });
+            setTimeout(() => {
+              setNoti(null);
+            }, 3000);
           });
       }
     } else {
@@ -42,6 +57,7 @@ const PersonForm = ({ persons, setPersons }) => {
 
   return (
     <div>
+      <Notification noti={noti} />
       <form onSubmit={submitBehaviour}>
         <div>
           Name:{" "}
