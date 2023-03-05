@@ -19,3 +19,11 @@
 ##Exercises 2.11
 
 - useEffect hook + axios for data fetching.
+
+##Exercise 2.18
+
+- Use useEffect with second parameter.
+  - using country as 2nd parameter.
+- Enable prefix filter.
+  - using slice.
+- Reading unknown key-value pairs from an object literal.
