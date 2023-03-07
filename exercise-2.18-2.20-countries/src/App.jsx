@@ -54,7 +54,12 @@ function App() {
           </div>
         ) : (
           filteredCountry.map((n) => {
-            return <div key={n.name.common}>{n.name.common}</div>;
+            return (
+              <div key={n.name.common}>
+                {n.name.common}{" "}
+                <button onClick={() => setFilteredCountry([n])}>show</button>
+              </div>
+            );
           })
         )}
       </div>
