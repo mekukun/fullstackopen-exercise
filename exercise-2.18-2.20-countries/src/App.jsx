@@ -1,5 +1,6 @@
 import countryService from "./services/country_names";
 import { useEffect, useState } from "react";
+import Weather from "./weather";
 
 function App() {
   const [search, setSearch] = useState("");
@@ -51,6 +52,7 @@ function App() {
               alt={filteredCountry[0].name.common}
               width="100px"
             />
+            <Weather country={filteredCountry[0].name.common} />
           </div>
         ) : (
           filteredCountry.map((n) => {
