@@ -52,7 +52,7 @@ function App() {
               alt={filteredCountry[0].name.common}
               width="100px"
             />
-            <Weather country={filteredCountry[0].name.common} />
+            <Weather country={filteredCountry[0].capital} />
           </div>
         ) : (
           filteredCountry.map((n) => {
