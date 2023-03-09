@@ -55,6 +55,38 @@ app.delete("/api/persons/:id", (request, response) => {
   response.status(204).end();
 });
 
+const generateId = () => {
+  const min = 1;
+  const max = 1000;
+
+  while (true) {
+    let randomNumber = Math.floor(Math.random() * (max - min + 1) + min);
+    if (![...persons.map((n) => n.id)].includes(randomNumber)) {
+      return randomNumber;
+    }
+  }
+};
+
+app.post("/api/persons", (request, response) => {
+  const body = request.body;
+
+  if (!body.content) {
+    return response.status(400).json({
+      error: "content missing",
+    });
+  }
+
+  const person = {
+    id: generateId(),
+    name: body.content.name,
+    number: body.content.number,
+  };
+
+  persons = persons.concat(person);
+
+  response.json(persons);
+});
+
 const PORT = 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
