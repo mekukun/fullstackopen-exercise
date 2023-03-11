@@ -1,4 +1,7 @@
+require("dotenv").config();
 const express = require("express");
+const mongoose = require("mongoose");
+const Person = require("./models/person");
 const morgan = require("morgan");
 const cors = require("cors");
 const app = express();
@@ -22,69 +25,50 @@ app.use(
 
 app.use(cors());
 
-let persons = [
-  {
-    id: 1,
-    name: "Arto Hellas",
-    number: "040-123456",
-  },
-  {
-    id: 2,
-    name: "Ada Lovelace",
-    number: "39-44-5323523",
-  },
-  {
-    id: 3,
-    name: "Dan Abramov",
-    number: "12-43-234345",
-  },
-  {
-    id: 4,
-    name: "Mary Poppendieck",
-    number: "39-23-6423122",
-  },
-];
+mongoose.set("strictQuery", false);
+mongoose
+  .connect(process.env.DB_URI)
+  .then((result) => {
+    console.log("connected to MongoDB");
+  })
+  .catch((error) => {
+    console.log("error connecting to MongoDB:", error.message);
+  });
 
 app.get("/api/persons", (request, response) => {
-  response.json(persons);
+  Person.find({})
+    .then((result) => {
+      response.json(result);
+    })
+    .catch(() => response.status(404).end());
 });
 
 app.get("/api/info", (request, response) => {
   const now = new Date();
-  response.send(
-    `<h1>Phonebook has info for ${persons.length} people.</h1><p>Request received at: ${now}</p>`
-  );
+  Person.find({})
+    .then((result) => {
+      response.send(
+        `<h1>Phonebook has info for ${result.length} people.</h1><p>Request received at: ${now}</p>`
+      );
+    })
+    .catch(() => response.status(404).end());
 });
 
 app.get("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id);
-  const person = persons.find((person) => person.id === id);
-
-  if (person) {
-    response.json(person);
-  } else {
-    response.status(404).end();
-  }
+  Person.findById(request.params.id)
+    .then((person) => {
+      response.json(person);
+    })
+    .catch(() => response.status(404).end());
 });
 
 app.delete("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id);
-  persons = persons.filter((person) => person.id !== id);
-
-  response.status(204).end();
+  Person.findByIdAndDelete(request.params.id)
+    .then((person) => {
+      response.json(person);
+    })
+    .catch(() => response.status(404).end());
 });
-
-const generateId = () => {
-  const min = 1;
-  const max = 1000;
-
-  while (true) {
-    let randomNumber = Math.floor(Math.random() * (max - min + 1) + min);
-    if (![...persons.map((n) => n.id)].includes(randomNumber)) {
-      return randomNumber;
-    }
-  }
-};
 
 app.post("/api/persons", (request, response) => {
   const body = request.body;
@@ -95,30 +79,31 @@ app.post("/api/persons", (request, response) => {
     });
   }
 
-  if ([...persons.map((n) => n.name)].includes(body.name)) {
-    return response.status(400).json({
-      error: "Name must be unique",
-    });
-  }
-
   if (!body.number) {
     return response.status(400).json({
       error: "Number is missing",
     });
   }
 
-  const person = {
-    id: generateId(),
+  const person = new Person({
     name: body.name,
     number: body.number,
-  };
+  });
 
-  persons = persons.concat(person);
-
-  response.json(persons);
+  person.save().then((person) => {
+    response.json(person);
+  });
 });
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+});
+
+// Close the Mongoose connection when the Node.js process exits
+process.on("SIGINT", () => {
+  mongoose.connection.close(() => {
+    console.log("Mongoose connection closed");
+    process.exit(0);
+  });
 });
