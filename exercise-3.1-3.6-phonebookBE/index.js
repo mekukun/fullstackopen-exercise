@@ -40,7 +40,7 @@ app.get("/api/persons", (request, response) => {
     .then((result) => {
       response.json(result);
     })
-    .catch(() => response.status(404).end());
+    .catch((err) => next(err));
 });
 
 app.get("/api/info", (request, response) => {
@@ -51,7 +51,7 @@ app.get("/api/info", (request, response) => {
         `<h1>Phonebook has info for ${result.length} people.</h1><p>Request received at: ${now}</p>`
       );
     })
-    .catch(() => response.status(404).end());
+    .catch((err) => next(err));
 });
 
 app.get("/api/persons/:id", (request, response) => {
@@ -59,7 +59,7 @@ app.get("/api/persons/:id", (request, response) => {
     .then((person) => {
       response.json(person);
     })
-    .catch(() => response.status(404).end());
+    .catch((err) => next(err));
 });
 
 app.delete("/api/persons/:id", (request, response) => {
@@ -67,7 +67,7 @@ app.delete("/api/persons/:id", (request, response) => {
     .then((person) => {
       response.json(person);
     })
-    .catch(() => response.status(404).end());
+    .catch((err) => next(err));
 });
 
 app.post("/api/persons", (request, response) => {
