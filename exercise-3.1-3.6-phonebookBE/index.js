@@ -35,7 +35,7 @@ mongoose
     console.log("error connecting to MongoDB:", error.message);
   });
 
-app.get("/api/persons", (request, response) => {
+app.get("/api/persons", (request, response, next) => {
   Person.find({})
     .then((result) => {
       response.json(result);
@@ -43,7 +43,7 @@ app.get("/api/persons", (request, response) => {
     .catch((err) => next(err));
 });
 
-app.get("/api/info", (request, response) => {
+app.get("/api/info", (request, response, next) => {
   const now = new Date();
   Person.find({})
     .then((result) => {
@@ -54,7 +54,7 @@ app.get("/api/info", (request, response) => {
     .catch((err) => next(err));
 });
 
-app.get("/api/persons/:id", (request, response) => {
+app.get("/api/persons/:id", (request, response, next) => {
   Person.findById(request.params.id)
     .then((person) => {
       response.json(person);
@@ -62,10 +62,27 @@ app.get("/api/persons/:id", (request, response) => {
     .catch((err) => next(err));
 });
 
-app.delete("/api/persons/:id", (request, response) => {
+app.put("/api/persons/:id", (request, response, next) => {
+  const body = request.body;
+
+  const person = {
+    name: body.name,
+    number: body.number,
+  };
+
+  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+    .then((updatedPerson) => {
+      response.json(updatedPerson);
+    })
+    .catch((error) => next(error));
+});
+
+app.delete("/api/persons/:id", (request, response, next) => {
   Person.findByIdAndDelete(request.params.id)
     .then((person) => {
-      response.json(person);
+      person === null
+        ? response.send({ error: "id may already been deleted" })
+        : response.json(person);
     })
     .catch((err) => next(err));
 });
