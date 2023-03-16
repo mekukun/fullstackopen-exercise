@@ -14,13 +14,24 @@ const PersonForm = ({ persons, setPersons }) => {
 
     if (!persons.some((person) => person.name === newName)) {
       const newPerson = { name: newName, number: newNumber };
-      noteService.createThis(newPerson).then((response) => {
-        setPersons(persons.concat(response));
-        setNoti({ text: `Added ${newName}`, style: true });
-        setTimeout(() => {
-          setNoti(null);
-        }, 3000);
-      });
+      noteService
+        .createThis(newPerson)
+        .then((response) => {
+          setPersons(persons.concat(response));
+          setNoti({ text: `Added ${newName}`, style: true });
+          setTimeout(() => {
+            setNoti(null);
+          }, 3000);
+        })
+        .catch((err) => {
+          setNoti({
+            text: err.response.data.error,
+            style: false,
+          });
+          setTimeout(() => {
+            setNoti(null);
+          }, 3000);
+        });
     } else if (searchedPerson.number !== newNumber) {
       const confirmChange = confirm(
         `${newName} is already added to phonebook, replace the old number with a new one?`
@@ -39,7 +50,7 @@ const PersonForm = ({ persons, setPersons }) => {
           })
           .catch((err) => {
             setNoti({
-              text: err.response.data.error,
+              text: `Information of ${searchedPerson.name} has already been removed from server`,
               style: false,
             });
             setTimeout(() => {
