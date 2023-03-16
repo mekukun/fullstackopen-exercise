@@ -39,7 +39,7 @@ const PersonForm = ({ persons, setPersons }) => {
           })
           .catch((err) => {
             setNoti({
-              text: `Information of ${searchedPerson.name} has already been removed from server`,
+              text: err.response.data.error,
               style: false,
             });
             setTimeout(() => {
