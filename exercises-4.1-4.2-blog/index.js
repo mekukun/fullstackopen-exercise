@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -12,8 +13,15 @@ const blogSchema = new mongoose.Schema({
 
 const Blog = mongoose.model("Blog", blogSchema);
 
-const mongoUrl = "mongodb://localhost/bloglist";
-mongoose.connect(mongoUrl);
+const mongoUrl = `mongodb+srv://mekukun:${process.env.DB_TOKEN}@cluster0.srtfxdb.mongodb.net/blog`;
+mongoose
+  .connect(mongoUrl)
+  .then((result) => {
+    console.log("connected to MongoDB");
+  })
+  .catch((error) => {
+    console.log("error connecting to MongoDB:", error.message);
+  });
 
 app.use(cors());
 app.use(express.json());
